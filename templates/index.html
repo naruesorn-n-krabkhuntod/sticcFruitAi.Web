@@ -1,0 +1,285 @@
+<html>
+    <head>
+        <title>Sticc ioT</title>
+        <style>
+            * {
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+            }
+            header {
+                width: 100%;
+                background-color: #5e0114;
+                padding: 10px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                position: sticky;
+                top: 0;
+                img {
+                    width: 64px;
+                    border-radius: 100%;
+                }
+                .title {
+                    font-size: 20px;
+                    color: #fff;
+                    .subtitle {
+                        font-size: 16px;
+                        color: #fffe;
+                    }
+                }
+            }
+            .content-container {
+                display: flex;
+                width: 100%;
+                height: calc(100dvh - 84px);
+                background-color: #f3f3f3;
+
+                .sidenav {
+                    width: 300px;
+                    height: calc(100dvh - 84px);
+                    background-color: #fafafa;
+                    border-right: 1px solid #e5e5e5;
+                    display: flex;
+                    flex-direction: column;
+                    text-wrap: nowrap;
+                    position: fixed;
+                    top: 84px;
+                    img {
+                        width: 30px;
+                    }
+                    .item {
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        padding: 15px;
+                        cursor: pointer;
+                    }
+                    .selective-item {
+                        background-color: #fff;
+                        border-bottom: 1px solid #e5e5e5;
+                        border-top: 1px solid #e5e5e5;
+                    }
+                }
+                .container {
+                    margin-left: 300px;
+                }
+                .home-container {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    gap: 15px;
+                    width: 100%;
+                    height: fit-content;
+                    padding: 10px;
+                    .box {
+                        background-color: #fff;
+                        border: 1px solid #ccc;
+                        width: 100%;
+                        height: 270px;
+                        border-radius: 6px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        padding: 10px;
+                        img {
+                            height: 175px;
+                        }
+                        span {
+                            font-size: 24px;
+                            font-weight: bold;
+                        }
+                        .detail {
+                            text-align: center;
+                            font-size: 12px;
+                        }
+                        button {
+                            background-color: #4562e6;
+                            padding: 10px 15px;
+                            align-self: end;
+                            color: #fff;
+                            border: none;
+                            border-radius: 5px;
+                        }
+                    }
+                    
+                }
+                .hide {
+                    display: none;
+                }
+            }
+            .dark {
+                background-color: #000 !important;
+                color: #fff;
+                .sidenav {
+                    background-color: #222;
+                    border-color: #444;
+                    .selective-item {
+                        background-color: #444;
+                        border: none;
+                    }
+                }
+                .home-container {
+                    .box {
+                        background-color: #333;
+                        border-color: #444  ;
+                    }
+                }
+            }
+        </style>
+
+        <script>
+            function runApp(data){
+                fetch('/' + data).then(response => { return response.json(); })
+            }
+            function darkMode(){
+                let element = document.getElementById("container");
+                let cookie = document.cookie.split("; ")
+                let darkmode = 'false'
+                cookie.forEach((ck)=>{
+                    if(ck.split("=")[0] == "darkmode") {
+                        darkmode = ck.split("=")[1]
+                        if(darkmode == 'true'){
+                            element.classList.add("dark");
+                            document.cookie = "darkmode=false"
+                            darkmode = 'false';
+                        }
+                        else{
+                            element.classList.remove("dark");
+                            document.cookie = "darkmode=true"
+                            darkmode = 'true'
+                        }
+                    }
+                })
+                return 0;
+            }
+            function getDarkMode(){
+                let element = document.getElementById("container");
+                let darkmode = 'false'
+                if(document.cookie.search("darkmode") < 0){
+                    document.cookie = "darkmode=true"
+                }
+                let cookie = document.cookie.split("; ")
+                cookie.forEach((ck)=>{
+                    if(ck.split("=")[0] == "darkmode") {
+                        darkmode = ck.split("=")[1]
+                        if(darkmode == 'true'){
+                            element.classList.remove("dark");
+                        }
+                        else{
+                            element.classList.add("dark");
+                        }
+                    }
+                })
+                return 0;
+            }
+            function redirect(path){
+                document.getElementById("home").classList.remove('selective-item')
+                document.getElementById("report").classList.remove('selective-item')
+                document.getElementById("log").classList.remove('selective-item')
+                document.getElementById("setting").classList.remove('selective-item')
+                document.getElementById("cradit").classList.remove('selective-item')
+                document.getElementById(path).classList.add('selective-item')
+
+                document.getElementById("home-box").classList.add('hide')
+                document.getElementById("report-box").classList.add('hide')
+                document.getElementById("log-box").classList.add('hide')
+                document.getElementById("setting-box").classList.add('hide')
+                document.getElementById("cradit-box").classList.add('hide')
+                document.getElementById(path + "-box").classList.remove('hide')
+            }
+        </script>
+    </head>
+
+    <body onload="getDarkMode()">
+        <header>
+            <img src="static/logo.png">
+            <span class="title">
+                วิทยาลัยการอาชีพสตึก
+                <br>
+                <span class="subtitle">ระบบคัดแยกผลไม้</span>
+            </span>
+        </header>
+
+        <div class="content-container" id="container">
+            <div class="sidenav">
+                <div class="item selective-item" onclick="redirect('home')" id="home">
+                    <img src="static/icon/apps.png">
+                    หน้าหลัก
+                </div>
+                <div class="item" onclick="redirect('report')" id="report">
+                    <img src="static/icon/static.png">
+                    สถิติ
+                </div>
+                <div class="item" onclick="redirect('log')" id="log">
+                    <img src="static/icon/log.png">
+                    ข้อมูลย้อนหลัง
+                </div>
+                <div class="item" onclick="redirect('setting')" id="setting">
+                    <img src="static/icon/setting.png">
+                    การตั้งค่า
+                </div>
+                <div class="item" onclick="redirect('cradit')" id="cradit">
+                    <img src="static/logo.png" style="border-radius: 100%;">
+                    วิทยาลัยการอาชีพสตึก
+                </div>
+                <div style="height: 100%;"></div>
+                <div class="item selective-item">
+                    <img src="static/icon/user.png">
+                    ผู้ดูแลระบบ
+                    <div style="width: 100%;"></div>
+                    <img src="static/icon/darkmode.png" onclick="darkMode()" class="theme">
+                </div>
+            </div>
+
+
+            <!-- home -->
+             <div class="home-container container" id="home-box">
+                <div class="box">
+                    <img src="static/orange.jpg">
+                    <span>ส้ม</span>
+                    <button onclick="runApp('orange')">เริ่มทำงาน</button>
+                </div>
+                <div class="box">
+                    <img src="static/lime.jpg">
+                    <span>มะนาว</span>
+                    <button>เริ่มทำงาน</button>
+                </div>
+                <div class="box">
+                    <img src="static/apple.jpg">
+                    <span>แอปเปิล</span>
+                    <button>เริ่มทำงาน</button>
+                </div>
+                <div class="box">
+                    <img src="static/dragon.webp">
+                    <span>แก้วมังกร</span>
+                    <button>เริ่มทำงาน</button>
+                </div>
+                <div class="box">
+                    <img src="static/pineapple.jpg">
+                    <span>สัปรดภูแล</span>
+                    <button>เริ่มทำงาน</button>
+                </div>
+                <div class="box">
+                    <img src="static/plub.jpg">
+                    <span>ลูกพลับ</span>
+                    <button>เริ่มทำงาน</button>
+                </div>
+                <div class="box">
+                    <img src="static/banana.webp">
+                    <span>กล้วย</span>
+                    <button>เริ่มทำงาน</button>
+                </div>
+                <div class="box">
+                    <img src="static/mungcud.jpg">
+                    <span>มังคุด</span>
+                    <button>เริ่มทำงาน</button>
+                </div>
+            </div>
+             <div class="report-container container hide" id="report-box">eeeeeeeeee</div>
+             <div class="log-container container hide" id="log-box">ffffffffffff</div>
+             <div class="setting-container container hide" id="setting-box">yyyyyyyyyyyyyy</div>
+             <div class="cradit-container container hide" id="cradit-box">bbbbbbbbbbb</div>
+        </div>
+    </body>
+</html>
