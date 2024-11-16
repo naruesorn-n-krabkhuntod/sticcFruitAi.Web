@@ -1,9 +1,12 @@
-from flask import Flask, jsonify, render_template, request
 import os
-from keras.models import load_model
 import cv2
-import numpy as np
 import time
+import webbrowser
+import numpy as np
+from keras.models import load_model
+from flask import Flask, jsonify, render_template
+
+
 np.set_printoptions(suppress=True)
 orange_model = load_model("model/orange.h5", compile=False)
 class_names = ["good", "bad", "none"]
@@ -17,6 +20,10 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     return render_template("index.html")
+
+@app.route('/chart')
+def chart():
+    return render_template("chart.html")
 
 
 @app.route('/orange', methods=['GET'])
